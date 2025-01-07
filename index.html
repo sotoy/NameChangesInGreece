@@ -19,7 +19,7 @@
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             display: none;
-            z-index: 1000; /* Ensure it appears on top */
+            z-index: 1000;
         }
     </style>
 </head>
@@ -62,11 +62,12 @@
                         marker.on('click', function() {
                             console.log('Marker clicked');  // Debugging: Check if the click event is triggered
                             var infoPane = document.getElementById('info-pane');
+                            console.log(settlement);  // Debugging: Log the settlement data being passed to the info pane
                             infoPane.innerHTML = `
                                 <h3>${settlement['Νέα Ονομασία']}</h3>
                                 <p><strong>Region:</strong> ${settlement['Νομός']}</p>
                                 <p><strong>Coordinates:</strong> ${settlement.latitude}, ${settlement.longitude}</p>
-                                <p><strong>Additional Information:</strong> ${settlement['Σχόλια']}</p>
+                                <p><strong>Additional Information:</strong> ${settlement['Σχόλια'] || 'No additional information'}</p>
                             `;
                             infoPane.style.display = 'block';  // Ensure the info pane becomes visible
                         });
