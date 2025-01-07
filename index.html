@@ -20,17 +20,39 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 1000;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        #info-pane button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #info-pane button:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <div id="info-pane"></div>
+    <div id="info-pane">
+        <button onclick="closeInfoPane()">Close</button>
+        <div id="info-content"></div>
+    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
     <script>
         var map = L.map('map').setView([38.0, 23.8], 7);  // Centered at Greece
+        var infoPane = document.getElementById('info-pane');
+        var infoContent = document.getElementById('info-content');
+        var currentMarker = null;
 
         // Add OSM tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
@@ -64,15 +86,22 @@
 
                         // Add click event to display the right pane with information
                         marker.on('click', function() {
-                            console.log('Marker clicked:', settlement);  // Check if the click event is triggered
-                            var infoPane = document.getElementById('info-pane');
-                            infoPane.innerHTML = `
+                            // Close the current info pane if open
+                            if (currentMarker) {
+                                closeInfoPane();
+                            }
+
+                            // Display the new info
+                            infoContent.innerHTML = `
                                 <h3>${settlement['Νέα Ονομασία']}</h3>
                                 <p><strong>Region:</strong> ${settlement['Νομός']}</p>
                                 <p><strong>Coordinates:</strong> ${settlement.latitude}, ${settlement.longitude}</p>
                                 <p><strong>Additional Information:</strong> ${settlement['Σχόλια'] || 'No additional information'}</p>
                             `;
                             infoPane.style.display = 'block';  // Ensure the info pane becomes visible
+
+                            // Set current marker to the one that was clicked
+                            currentMarker = marker;
                         });
                     } else {
                         console.log('Skipping settlement due to missing coordinates:', settlement);
@@ -83,6 +112,12 @@
                 console.log('Error loading CSV:', error);  // Log any errors
             }
         });
+
+        // Function to close the info pane
+        function closeInfoPane() {
+            infoPane.style.display = 'none';
+            currentMarker = null;
+        }
     </script>
 </body>
 </html>
