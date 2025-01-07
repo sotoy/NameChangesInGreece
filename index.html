@@ -19,6 +19,7 @@
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             display: none;
+            z-index: 1000; /* Ensure it appears on top */
         }
     </style>
 </head>
@@ -35,19 +36,17 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
         // Load the CSV data using PapaParse
-        Papa.parse('settlements_with_geolocations.csv', {
+        Papa.parse('https://raw.githubusercontent.com/username/repository/branch/settlements_with_geolocations.csv', {  // Replace with your raw GitHub URL
             download: true,
             header: true,
             dynamicTyping: true,
             complete: function(results) {
-                console.log("CSV data:", results.data);  // Debug: Log the data to check if it loads correctly
                 var settlements = results.data;
 
                 // Create markers for each settlement
                 settlements.forEach(function(settlement) {
-                    console.log("Processing:", settlement);  // Debug: Log each settlement
-                    if (settlement.Latitude && settlement.Longitude) {
-                        var marker = L.circleMarker([settlement.Latitude, settlement.Longitude], {
+                    if (settlement.latitude && settlement.longitude) {
+                        var marker = L.circleMarker([settlement.latitude, settlement.longitude], {
                             radius: 6,
                             fillColor: "blue",
                             color: "white",
@@ -61,20 +60,18 @@
 
                         // Add click event to display the right pane with information
                         marker.on('click', function() {
+                            console.log('Marker clicked');  // Debugging: Check if the click event is triggered
                             var infoPane = document.getElementById('info-pane');
                             infoPane.innerHTML = `
                                 <h3>${settlement['Νέα Ονομασία']}</h3>
                                 <p><strong>Region:</strong> ${settlement['Νομός']}</p>
-                                <p><strong>Coordinates:</strong> ${settlement.Latitude}, ${settlement.Longitude}</p>
-                                <p><strong>Additional Information:</strong> ${settlement['Φ.Ε.Κ.'] || 'No additional info'}</p>
+                                <p><strong>Coordinates:</strong> ${settlement.latitude}, ${settlement.longitude}</p>
+                                <p><strong>Additional Information:</strong> ${settlement['Σχόλια']}</p>
                             `;
-                            infoPane.style.display = 'block';
+                            infoPane.style.display = 'block';  // Ensure the info pane becomes visible
                         });
                     }
                 });
-            },
-            error: function(error) {
-                console.log("Error loading CSV:", error);
             }
         });
     </script>
