@@ -36,16 +36,20 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
         // Load the CSV data using PapaParse
-        Papa.parse('settlements_with_geolocations.csv', {  // Replace with your raw GitHub URL
+        Papa.parse('https://raw.githubusercontent.com/sotoy/repository/branch/settlements_with_geolocations.csv', {  // Replace with your raw GitHub URL
             download: true,
             header: true,
             dynamicTyping: true,
             complete: function(results) {
                 var settlements = results.data;
 
+                console.log('Loaded settlements:', settlements); // Check if data is loaded
+
                 // Create markers for each settlement
                 settlements.forEach(function(settlement) {
                     if (settlement.latitude && settlement.longitude) {
+                        console.log('Creating marker for:', settlement);  // Log data for each settlement
+
                         var marker = L.circleMarker([settlement.latitude, settlement.longitude], {
                             radius: 6,
                             fillColor: "blue",
@@ -60,9 +64,8 @@
 
                         // Add click event to display the right pane with information
                         marker.on('click', function() {
-                            console.log('Marker clicked');  // Debugging: Check if the click event is triggered
+                            console.log('Marker clicked:', settlement);  // Check if the click event is triggered
                             var infoPane = document.getElementById('info-pane');
-                            console.log(settlement);  // Debugging: Log the settlement data being passed to the info pane
                             infoPane.innerHTML = `
                                 <h3>${settlement['Νέα Ονομασία']}</h3>
                                 <p><strong>Region:</strong> ${settlement['Νομός']}</p>
@@ -71,8 +74,13 @@
                             `;
                             infoPane.style.display = 'block';  // Ensure the info pane becomes visible
                         });
+                    } else {
+                        console.log('Skipping settlement due to missing coordinates:', settlement);
                     }
                 });
+            },
+            error: function(error) {
+                console.log('Error loading CSV:', error);  // Log any errors
             }
         });
     </script>
