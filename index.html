@@ -19,7 +19,6 @@
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             display: none;
-            z-index: 1000;
         }
     </style>
 </head>
@@ -36,21 +35,19 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
         // Load the CSV data using PapaParse
-        Papa.parse('https://raw.githubusercontent.com/sotoy/repository/branch/settlements_with_geolocations.csv', {  // Replace with your raw GitHub URL
+        Papa.parse('settlements_with_geolocations.csv', {
             download: true,
             header: true,
             dynamicTyping: true,
             complete: function(results) {
+                console.log("CSV data:", results.data);  // Debug: Log the data to check if it loads correctly
                 var settlements = results.data;
-
-                console.log('Loaded settlements:', settlements); // Check if data is loaded
 
                 // Create markers for each settlement
                 settlements.forEach(function(settlement) {
-                    if (settlement.latitude && settlement.longitude) {
-                        console.log('Creating marker for:', settlement);  // Log data for each settlement
-
-                        var marker = L.circleMarker([settlement.latitude, settlement.longitude], {
+                    console.log("Processing:", settlement);  // Debug: Log each settlement
+                    if (settlement.Latitude && settlement.Longitude) {
+                        var marker = L.circleMarker([settlement.Latitude, settlement.Longitude], {
                             radius: 6,
                             fillColor: "blue",
                             color: "white",
@@ -64,23 +61,20 @@
 
                         // Add click event to display the right pane with information
                         marker.on('click', function() {
-                            console.log('Marker clicked:', settlement);  // Check if the click event is triggered
                             var infoPane = document.getElementById('info-pane');
                             infoPane.innerHTML = `
                                 <h3>${settlement['Νέα Ονομασία']}</h3>
                                 <p><strong>Region:</strong> ${settlement['Νομός']}</p>
-                                <p><strong>Coordinates:</strong> ${settlement.latitude}, ${settlement.longitude}</p>
-                                <p><strong>Additional Information:</strong> ${settlement['Σχόλια'] || 'No additional information'}</p>
+                                <p><strong>Coordinates:</strong> ${settlement.Latitude}, ${settlement.Longitude}</p>
+                                <p><strong>Additional Information:</strong> ${settlement['Φ.Ε.Κ.'] || 'No additional info'}</p>
                             `;
-                            infoPane.style.display = 'block';  // Ensure the info pane becomes visible
+                            infoPane.style.display = 'block';
                         });
-                    } else {
-                        console.log('Skipping settlement due to missing coordinates:', settlement);
                     }
                 });
             },
             error: function(error) {
-                console.log('Error loading CSV:', error);  // Log any errors
+                console.log("Error loading CSV:", error);
             }
         });
     </script>
