@@ -64,15 +64,16 @@
             dynamicTyping: true,
             complete: function(results) {
                 var settlements = results.data;
-
-                console.log('Loaded settlements:', settlements); // Check if data is loaded
+                console.log('Loaded settlements:', settlements.slice(0, 10));  // Debugging: log only the first 10 settlements
 
                 // Create markers for each settlement
-                settlements.forEach(function(settlement) {
-                    if (settlement.latitude && settlement.longitude) {
-                        console.log('Creating marker for:', settlement);  // Log data for each settlement
+                settlements.forEach(function(settlement, index) {
+                    if (settlement.Latitude && settlement.Longitude) {
+                        if (index < 10) {  // Log the first 10 markers for debugging
+                            console.log('Creating marker for:', settlement);  // Log each settlement with valid coordinates
+                        }
 
-                        var marker = L.circleMarker([settlement.latitude, settlement.longitude], {
+                        var marker = L.circleMarker([settlement.Latitude, settlement.Longitude], {
                             radius: 6,
                             fillColor: "blue",
                             color: "white",
@@ -86,6 +87,10 @@
 
                         // Add click event to display the right pane with information
                         marker.on('click', function() {
+                            if (index < 3) {  // Log only the first 3 click events for debugging
+                                console.log('Marker clicked:', settlement['Νέα Ονομασία']);  // Log click event for debugging
+                            }
+                            
                             // Close the current info pane if open
                             if (currentMarker) {
                                 closeInfoPane();
@@ -94,8 +99,9 @@
                             // Display the new info
                             infoContent.innerHTML = `
                                 <h3>${settlement['Νέα Ονομασία']}</h3>
+                                <p><strong>Old name:</strong> ${settlement['Παλαιά Ονομασία']}</p>
                                 <p><strong>Region:</strong> ${settlement['Νομός']}</p>
-                                <p><strong>Coordinates:</strong> ${settlement.latitude}, ${settlement.longitude}</p>
+                                <p><strong>Coordinates:</strong> ${settlement.Latitude}, ${settlement.Longitude}</p>
                                 <p><strong>Additional Information:</strong> ${settlement['Σχόλια'] || 'No additional information'}</p>
                             `;
                             infoPane.style.display = 'block';  // Ensure the info pane becomes visible
