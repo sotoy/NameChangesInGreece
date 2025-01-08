@@ -58,7 +58,7 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
         // Load the CSV data using PapaParse
-        Papa.parse('settlements_with_geolocations.csv', {  // Replace with your raw GitHub URL
+        Papa.parse('settlements_with_coordinates_full.csv', {  // Replace with your raw GitHub URL
             download: true,
             header: true,
             dynamicTyping: true,
@@ -75,11 +75,11 @@
 
                         var marker = L.circleMarker([settlement.Latitude, settlement.Longitude], {
                             radius: 6,
-                            fillColor: "blue",
+                            fillColor: "darkturquoise",
                             color: "white",
                             weight: 1,
                             opacity: 0.8,
-                            fillOpacity: 0.6
+                            fillOpacity: 0.4
                         }).addTo(map);
 
                         // Add tooltip on hover
@@ -99,10 +99,15 @@
                             // Display the new info
                             infoContent.innerHTML = `
                                 <h3>${settlement['Νέα Ονομασία']}</h3>
-                                <p><strong>Old name:</strong> ${settlement['Παλαιά Ονομασία']}</p>
-                                <p><strong>Region:</strong> ${settlement['Νομός']}</p>
+                                <p><strong>Παλαιά Ονομασία:</strong> ${settlement['Παλαιά Ονομασία']}</p>
+                                <p><strong>Παραλλαγή Παλαιάς Ονομασίας:</strong> ${settlement['Παραλλαγή Παλαιάς Ονομασίας']  || 'Κενό'}</p>
+                                <p><strong>Παραλλαγή Νέας Ονομασίας:</strong> ${settlement['Παραλλαγή Νέας Ονομασίας']  || 'Κενό'}</p>
+                                <p><strong>Γεωγραφικό Διαμέρισμα:</strong> ${settlement['Γεωγραφικό Διαμέρισμα']}</p>
+                                <p><strong>Νομός:</strong> ${settlement['Νομός']}</p>
+                                <p><strong>Επαρχία:</strong> ${settlement['Επαρχία']}</p>
+                                <p><strong>Φ.Ε.Κ.:</strong> ${settlement['Φ.Ε.Κ.']}</p>
+                                <p><strong>Σχόλια:</strong> ${settlement['Σχόλια'] || 'Κανένα σχόλιο'}</p>
                                 <p><strong>Coordinates:</strong> ${settlement.Latitude}, ${settlement.Longitude}</p>
-                                <p><strong>Additional Information:</strong> ${settlement['Σχόλια'] || 'No additional information'}</p>
                             `;
                             infoPane.style.display = 'block';  // Ensure the info pane becomes visible
 
