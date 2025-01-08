@@ -178,9 +178,11 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
     <script>
-        var currentMarker = null; 
         // Initialize the map
         var map = L.map('map').setView([38.0, 23.8], 7);
+        var infoPane = document.getElementById('info-pane');
+        var infoContent = document.getElementById('info-content');
+        var currentMarker = null;
 
         // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
