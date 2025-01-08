@@ -25,6 +25,7 @@
         main {
             display: flex;
             flex: 1;
+            position: relative;
         }
 
         #sidebar {
@@ -33,6 +34,13 @@
             padding: 20px;
             border-right: 1px solid #ccc;
             overflow-y: auto;
+            transition: width 0.3s ease, padding 0.3s ease;
+        }
+
+        #sidebar.collapsed {
+            width: 0;
+            padding: 0;
+            overflow: hidden;
         }
 
         #map {
@@ -70,6 +78,24 @@
         #info-pane button:hover {
             background-color: #d32f2f;
         }
+
+        #toggle-btn {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            cursor: pointer;
+            z-index: 1000;
+            border-radius: 5px;
+            transition: left 0.3s ease;
+        }
+
+        #toggle-btn.collapsed {
+            left: 0;
+        }
     </style>
 </head>
 <body>
@@ -77,6 +103,7 @@
         Name changes of settlements in Greece
     </header>
     <main>
+        <button id="toggle-btn">Hide</button>
         <div id="sidebar">
             <h3>Credits and Clarifications</h3>
             <ul>
@@ -87,53 +114,15 @@
                 <li>Note: Some locations may have approximate coordinates.</li>
             </ul>
             <div style="text-align: center; margin-top: 20px;">
-                <!-- Coffee Button -->
-                <p style="font-size: 18px; font-family: Arial, sans-serif; color: #333;">
-                    <strong>Buy me a coffee and help me improve the data!</strong>
-                </p>
-                <a href="https://www.paypal.com/donate?hosted_button_id=6Z3CYW9VHWC7Q" target="_blank" style="text-decoration: none;">
-                    <button style="
-                        background-color: #ffdd57; 
-                        color: #000; 
-                        border: none; 
-                        border-radius: 8px; 
-                        padding: 10px 20px; 
-                        font-size: 16px; 
-                        font-family: Arial, sans-serif; 
-                        cursor: pointer; 
-                        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-                        transition: transform 0.2s ease-in-out;
-                        width: 220px; /* Set the same width */
-                        height: 50px; /* Set the same height */
-                    ">
-                        ☕ Buy Me a Coffee
-                    </button>
+                <p><strong>Buy me a coffee and help me improve the data!</strong></p>
+                <a href="https://www.paypal.com/donate?hosted_button_id=6Z3CYW9VHWC7Q" target="_blank">
+                    <button style="background-color: #ffdd57; color: black; border: none; border-radius: 5px; padding: 10px 20px;">☕ Buy Me a Coffee</button>
                 </a>
-                
-                <!-- GitHub Button -->
-                <p style="font-size: 18px; font-family: Arial, sans-serif; color: #333; margin-top: 20px;">
-                    <strong>Found an issue or have suggestions? Let me know on GitHub!</strong>
-                </p>
-                <a href="https://github.com/sotoy/NameChangesInGreece/issues" target="_blank" style="text-decoration: none;">
-                    <button style="
-                        background-color: #24292f; 
-                        color: #ffffff; 
-                        border: none; 
-                        border-radius: 8px; 
-                        padding: 10px 20px; 
-                        font-size: 16px; 
-                        font-family: Arial, sans-serif; 
-                        cursor: pointer; 
-                        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-                        transition: transform 0.2s ease-in-out;
-                        width: 220px; /* Set the same width */
-                        height: 50px; /* Set the same height */
-                    ">
-                        🐛 Report an Issue
-                    </button>
+                <p style="margin-top: 20px;"><strong>Found an issue? Let me know on GitHub!</strong></p>
+                <a href="https://github.com/sotoy/NameChangesInGreece/issues" target="_blank">
+                    <button style="background-color: #24292f; color: white; border: none; border-radius: 5px; padding: 10px 20px;">🐛 Report an Issue</button>
                 </a>
             </div>
-            
         </div>
         <div id="map"></div>
         <div id="info-pane">
@@ -143,75 +132,27 @@
     </main>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
     <script>
         var map = L.map('map').setView([38.0, 23.8], 7);  // Centered at Greece
-        var infoPane = document.getElementById('info-pane');
-        var infoContent = document.getElementById('info-content');
-        var currentMarker = null;
 
         // Add OSM tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        // Load the CSV data using PapaParse
-        Papa.parse('settlements_with_coordinates_full.csv', {  // Replace with your raw GitHub URL
-            download: true,
-            header: true,
-            dynamicTyping: true,
-            complete: function(results) {
-                var settlements = results.data;
+        var sidebar = document.getElementById('sidebar');
+        var toggleBtn = document.getElementById('toggle-btn');
 
-                // Create markers for each settlement
-                settlements.forEach(function(settlement) {
-                    if (settlement.Latitude && settlement.Longitude) {
-                        var marker = L.circleMarker([settlement.Latitude, settlement.Longitude], {
-                            radius: 6,
-                            fillColor: "darkturquoise",
-                            color: "darkturquoise",
-                            weight: 1,
-                            opacity: 1.0,
-                            fillOpacity: 0.4
-                        }).addTo(map);
-
-                        // Add tooltip on hover
-                        marker.bindTooltip(settlement['Νέα Ονομασία'], { permanent: false, opacity: 0.7 });
-
-                        // Add click event to display the right pane with information
-                        marker.on('click', function() {
-                            if (currentMarker) {
-                                closeInfoPane();
-                            }
-
-                            // Display the new info
-                            infoContent.innerHTML = `
-                                <h3>${settlement['Νέα Ονομασία']}</h3>
-                                <p><strong>Παλαιά Ονομασία:</strong> ${settlement['Παλαιά Ονομασία']}</p>
-                                <p><strong>Παραλλαγή Παλαιάς Ονομασίας:</strong> ${settlement['Παραλλαγή Παλαιάς Ονομασίας'] || 'Κενό'}</p>
-                                <p><strong>Παραλλαγή Νέας Ονομασίας:</strong> ${settlement['Παραλλαγή Νέας Ονομασίας'] || 'Κενό'}</p>
-                                <p><strong>Γεωγραφικό Διαμέρισμα:</strong> ${settlement['Γεωγραφικό Διαμέρισμα']}</p>
-                                <p><strong>Νομός:</strong> ${settlement['Νομός']}</p>
-                                <p><strong>Επαρχία:</strong> ${settlement['Επαρχία']}</p>
-                                <p><strong>Φ.Ε.Κ.:</strong> ${settlement['Φ.Ε.Κ.']}</p>
-                                <p><strong>Σχόλια:</strong> ${settlement['Σχόλια'] || 'Κανένα σχόλιο'}</p>
-                                <p><strong>Coordinates:</strong> ${settlement.Latitude}, ${settlement.Longitude}</p>
-                            `;
-                            infoPane.style.display = 'block';
-
-                            // Set current marker to the one that was clicked
-                            currentMarker = marker;
-                        });
-                    }
-                });
-            },
-            error: function(error) {
-                console.log('Error loading CSV:', error);
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            if (sidebar.classList.contains('collapsed')) {
+                toggleBtn.innerHTML = 'Show';
+            } else {
+                toggleBtn.innerHTML = 'Hide';
             }
         });
 
         // Function to close the info pane
         function closeInfoPane() {
-            infoPane.style.display = 'none';
-            currentMarker = null;
+            document.getElementById('info-pane').style.display = 'none';
         }
     </script>
 </body>
