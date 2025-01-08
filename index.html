@@ -3,12 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settlement Map</title>
+    <title>Name changes of settlements in Greece.</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <style>
-        #map {
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
             height: 100vh;
         }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+        }
+
+        #sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+        }
+
+        #map {
+            flex: 1;
+            height: 100%;
+        }
+
         #info-pane {
             position: absolute;
             right: 10px;
@@ -23,6 +54,7 @@
             max-height: 80vh;
             overflow-y: auto;
         }
+
         #info-pane button {
             position: absolute;
             top: 5px;
@@ -34,17 +66,33 @@
             cursor: pointer;
             border-radius: 5px;
         }
+
         #info-pane button:hover {
             background-color: #d32f2f;
         }
     </style>
 </head>
 <body>
-    <div id="map"></div>
-    <div id="info-pane">
-        <button onclick="closeInfoPane()">Close</button>
-        <div id="info-content"></div>
-    </div>
+    <header>
+        Settlement Map of Greece
+    </header>
+    <main>
+        <div id="sidebar">
+            <h3>Credits and Clarifications</h3>
+            <ul>
+                <li>Map data: OpenStreetMap contributors</li>
+                <li>Geocoding: Nominatim & OpenCage API</li>
+                <li>Data taken from the <a href="https://pandektis.ekt.gr/pandektis/handle/10442/4968">Institute for Neo Hellenic Research: Name Changes of Settlements in Greece.</a></li>
+                <li>CSV data prepared by me</li>
+                <li>Note: Some locations may have approximate coordinates.</li>
+            </ul>
+        </div>
+        <div id="map"></div>
+        <div id="info-pane">
+            <button onclick="closeInfoPane()">Close</button>
+            <div id="info-content"></div>
+        </div>
+    </main>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
@@ -64,15 +112,10 @@
             dynamicTyping: true,
             complete: function(results) {
                 var settlements = results.data;
-                console.log('Loaded settlements:', settlements.slice(0, 10));  // Debugging: log only the first 10 settlements
 
                 // Create markers for each settlement
-                settlements.forEach(function(settlement, index) {
+                settlements.forEach(function(settlement) {
                     if (settlement.Latitude && settlement.Longitude) {
-                        if (index < 10) {  // Log the first 10 markers for debugging
-                            console.log('Creating marker for:', settlement);  // Log each settlement with valid coordinates
-                        }
-
                         var marker = L.circleMarker([settlement.Latitude, settlement.Longitude], {
                             radius: 6,
                             fillColor: "darkturquoise",
@@ -87,11 +130,6 @@
 
                         // Add click event to display the right pane with information
                         marker.on('click', function() {
-                            if (index < 3) {  // Log only the first 3 click events for debugging
-                                console.log('Marker clicked:', settlement['Νέα Ονομασία']);  // Log click event for debugging
-                            }
-                            
-                            // Close the current info pane if open
                             if (currentMarker) {
                                 closeInfoPane();
                             }
@@ -100,8 +138,8 @@
                             infoContent.innerHTML = `
                                 <h3>${settlement['Νέα Ονομασία']}</h3>
                                 <p><strong>Παλαιά Ονομασία:</strong> ${settlement['Παλαιά Ονομασία']}</p>
-                                <p><strong>Παραλλαγή Παλαιάς Ονομασίας:</strong> ${settlement['Παραλλαγή Παλαιάς Ονομασίας']  || 'Κενό'}</p>
-                                <p><strong>Παραλλαγή Νέας Ονομασίας:</strong> ${settlement['Παραλλαγή Νέας Ονομασίας']  || 'Κενό'}</p>
+                                <p><strong>Παραλλαγή Παλαιάς Ονομασίας:</strong> ${settlement['Παραλλαγή Παλαιάς Ονομασίας'] || 'Κενό'}</p>
+                                <p><strong>Παραλλαγή Νέας Ονομασίας:</strong> ${settlement['Παραλλαγή Νέας Ονομασίας'] || 'Κενό'}</p>
                                 <p><strong>Γεωγραφικό Διαμέρισμα:</strong> ${settlement['Γεωγραφικό Διαμέρισμα']}</p>
                                 <p><strong>Νομός:</strong> ${settlement['Νομός']}</p>
                                 <p><strong>Επαρχία:</strong> ${settlement['Επαρχία']}</p>
@@ -109,18 +147,16 @@
                                 <p><strong>Σχόλια:</strong> ${settlement['Σχόλια'] || 'Κανένα σχόλιο'}</p>
                                 <p><strong>Coordinates:</strong> ${settlement.Latitude}, ${settlement.Longitude}</p>
                             `;
-                            infoPane.style.display = 'block';  // Ensure the info pane becomes visible
+                            infoPane.style.display = 'block';
 
                             // Set current marker to the one that was clicked
                             currentMarker = marker;
                         });
-                    } else {
-                        console.log('Skipping settlement due to missing coordinates:', settlement);
                     }
                 });
             },
             error: function(error) {
-                console.log('Error loading CSV:', error);  // Log any errors
+                console.log('Error loading CSV:', error);
             }
         });
 
