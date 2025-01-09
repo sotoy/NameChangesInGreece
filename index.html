@@ -113,13 +113,58 @@
             #sidebar.collapsed {
                 transform: translateX(0);
             }
+            
+            #search-container {
+                position: relative;
+                margin-left: auto;
+                display: flex;
+                align-items: center;
+            }
+        
+            #search-bar {
+                padding: 5px 10px;
+                font-size: 16px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                width: 200px;
+            }
+        
+            #search-results {
+                position: absolute;
+                top: 35px;
+                right: 0;
+                background: white;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                width: 200px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                z-index: 1000;
+                max-height: 200px;
+                overflow-y: auto;
+                display: none;
+            }
+        
+            #search-results li {
+                padding: 10px;
+                cursor: pointer;
+            }
+        
+            #search-results li:hover {
+                background: #f0f0f0;
+            }
         }
     </style>
 </head>
 <body>
     <header>
         <button id="toggle-btn">☰</button>
-        <h1>Name changes of settlements in Greece</h1>    
+        <h1>Name changes of settlements in Greece</h1>  
+        <div id="search-container">
+            <input id="search-bar" type="text" placeholder="Search settlements..." autocomplete="off">
+            <ul id="search-results"></ul>
+        </div>
     </header>
     <main>
         <div id="sidebar">
@@ -194,6 +239,10 @@
         var infoPane = document.getElementById('info-pane');
         var infoContent = document.getElementById('info-content');
         var currentMarker = null;
+        let settlements = []; // To store settlement data
+        const searchBar = document.getElementById("search-bar");
+        const searchResults = document.getElementById("search-results");
+
 
         // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -262,6 +311,64 @@
                 console.log('Error loading CSV:', error);
             }
         });
+
+        // Event listener for search bar input
+        searchBar.addEventListener("input", function () {
+            const query = searchBar.value.toLowerCase().trim();
+            if (!query) {
+                searchResults.style.display = "none";
+                return;
+            }
+        
+            const results = settlements
+                .filter(settlement => 
+                    settlement['Νέα Ονομασία']?.toLowerCase().includes(query) || 
+                    settlement['Παλαιά Ονομασία']?.toLowerCase().includes(query)
+                )
+                .slice(0, 5); // Get top 5 results
+        
+            // Display results in the dropdown
+            searchResults.innerHTML = results.map(result => `
+                <li data-lat="${result.Latitude}" data-lng="${result.Longitude}">
+                    ${result['Νέα Ονομασία']} (${result['Παλαιά Ονομασία'] || 'Unknown'})
+                </li>
+            `).join("");
+        
+            searchResults.style.display = results.length > 0 ? "block" : "none";
+        });
+
+        // Event listener for result click
+        searchResults.addEventListener("click", function (e) {
+            const target = e.target;
+            if (target.tagName === "LI") {
+                const lat = parseFloat(target.dataset.lat);
+                const lng = parseFloat(target.dataset.lng);
+                const name = target.innerText.split('(')[0].trim();
+        
+                // Center and zoom the map
+                map.setView([lat, lng], 12);
+        
+                // Find the clicked settlement and open the info pane
+                const settlement = settlements.find(settlement =>
+                    settlement.Latitude == lat && settlement.Longitude == lng
+                );
+        
+                if (settlement) {
+                    infoContent.innerHTML = `
+                        <h3>${settlement['Νέα Ονομασία']}</h3>
+                        <p><strong>Παλαιά Ονομασία:</strong> ${settlement['Παλαιά Ονομασία']}</p>
+                        <p><strong>Γεωγραφικό Διαμέρισμα:</strong> ${settlement['Γεωγραφικό Διαμέρισμα']}</p>
+                        <p><strong>Coordinates:</strong> ${lat}, ${lng}</p>
+                    `;
+                    infoPane.style.display = "block";
+                }
+        
+                // Clear search and hide results
+                searchBar.value = "";
+                searchResults.style.display = "none";
+            }
+        });
+
 
         // Function to close the info pane
         function closeInfoPane() {
