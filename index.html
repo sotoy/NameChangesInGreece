@@ -104,7 +104,16 @@
         #toggle-btn:focus {
             outline: none;
         }
+        /* Media Query: Close the sidebar by default on mobile screens */
+        @media (max-width: 768px) {
+            #sidebar {
+                transform: translateX(-100%);
+            }
 
+            #sidebar.collapsed {
+                transform: translateX(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -113,7 +122,7 @@
         <h1>Name changes of settlements in Greece</h1>    
     </header>
     <main>
-        <div id="sidebar">
+        <div id="sidebar"  class="collapsed">
             <h3>Credits and Clarifications</h3>
             <ul>
                 <li>Map data: OpenStreetMap contributors</li>
