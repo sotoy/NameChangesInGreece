@@ -18,7 +18,15 @@
             background-color: #333;
             color: white;
             padding: 10px 20px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1000;
+        }
+
+        header h1 {
+            flex: 1;
+            margin: 0;
             font-size: 1.5em;
         }
 
@@ -29,30 +37,34 @@
         }
 
         #sidebar {
-            width: 250px;
+            width: 300px;
             background-color: #f4f4f4;
             padding: 20px;
             border-right: 1px solid #ccc;
             overflow-y: auto;
-            transition: width 0.3s ease, padding 0.3s ease;
+            transition: transform 0.3s ease;
+            transform: translateX(0);
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            z-index: 900;
         }
 
         #sidebar.collapsed {
-            width: 0;
-            padding: 0;
-            overflow: hidden;
+            transform: translateX(-100%);
         }
-
+        
         #map {
             flex: 1;
             height: 100%;
             position: relative;
+            z-index: 800;
         }
 
         #info-pane {
             position: absolute;
             right: 10px;
-            top: 10px;
+            top: 80px;
             width: 300px;
             background-color: white;
             padding: 10px;
@@ -81,33 +93,24 @@
         }
 
         #toggle-btn {
-            position: fixed;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: #007bff;
-            color: white;
+            background: none;
             border: none;
-            padding: 10px;
+            color: white;
+            font-size: 24px;
             cursor: pointer;
-            z-index: 1000;
-            border-radius: 50%;
-            font-size: 18px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin-right: 20px;
         }
 
-        #toggle-btn.collapsed {
-            transform: translateY(-50%) rotate(180deg);
+        #toggle-btn:focus {
+            outline: none;
         }
+
     </style>
 </head>
 <body>
     <header>
-        Name changes of settlements in Greece
+        <button id="toggle-btn">☰</button>
+        <h1>Name changes of settlements in Greece</h1>    
     </header>
     <main>
         <div id="sidebar">
@@ -172,7 +175,6 @@
             <button onclick="closeInfoPane()">Close</button>
             <div id="info-content"></div>
         </div>
-        <button id="toggle-btn">Hide Sidebar</button>
     </main>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -195,11 +197,6 @@
 
         toggleBtn.addEventListener('click', function () {
             sidebar.classList.toggle('collapsed');
-            if (sidebar.classList.contains('collapsed')) {
-                toggleBtn.innerHTML = '▶';
-            } else {
-                toggleBtn.innerHTML = '◁';
-            }
         });
 
         // Load the CSV data using PapaParse
