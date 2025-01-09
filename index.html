@@ -233,6 +233,7 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
     <script>
         // Initialize the map
         var map = L.map('map').setView([38.0, 23.8], 7);
@@ -240,6 +241,7 @@
         var infoContent = document.getElementById('info-content');
         var currentMarker = null;
         let settlements = []; // To store settlement data
+        let fuse;
         const searchBar = document.getElementById("search-bar");
         const searchResults = document.getElementById("search-results");
 
@@ -264,6 +266,7 @@
             dynamicTyping: true,
             complete: function(results) {
                 var settlements = results.data;
+                initializeFuse(settlements);
 
                 // Create markers for each settlement
                 settlements.forEach(function(settlement) {
@@ -320,15 +323,10 @@
                 return;
             }
         
-            const results = settlements
-                .filter(settlement => 
-                    settlement['Νέα Ονομασία']?.toLowerCase().includes(query) || 
-                    settlement['Παλαιά Ονομασία']?.toLowerCase().includes(query)
-                )
-                .slice(0, 5); // Get top 5 results
+            const results = fuse.search(query).slice(0, 5); // Get top 5 results
         
             // Display results in the dropdown
-            searchResults.innerHTML = results.map(result => `
+            searchResults.innerHTML = results.map(({ item }) => `
                 <li data-lat="${result.Latitude}" data-lng="${result.Longitude}">
                     ${result['Νέα Ονομασία']} (${result['Παλαιά Ονομασία'] || 'Unknown'})
                 </li>
@@ -358,6 +356,8 @@
                         <h3>${settlement['Νέα Ονομασία']}</h3>
                         <p><strong>Παλαιά Ονομασία:</strong> ${settlement['Παλαιά Ονομασία']}</p>
                         <p><strong>Γεωγραφικό Διαμέρισμα:</strong> ${settlement['Γεωγραφικό Διαμέρισμα']}</p>
+                        <p><strong>Νομός:</strong> ${settlement['Νομός']}</p>
+                        <p><strong>Επαρχία:</strong> ${settlement['Επαρχία']}</p>
                         <p><strong>Coordinates:</strong> ${lat}, ${lng}</p>
                     `;
                     infoPane.style.display = "block";
@@ -369,6 +369,23 @@
             }
         });
 
+        // Initialize Fuse.js after loading the data
+        function initializeFuse(data) {
+            const options = {
+                keys: [
+                    'Νέα Ονομασία',
+                    'Παλαιά Ονομασία',
+                    'Παραλλαγή Παλαιάς Ονομασίας',
+                    'Παραλλαγή Νέας Ονομασίας',
+                    'Νομός',
+                    'Επαρχία',
+                ],
+                threshold: 0.3, // Adjust for fuzzy matching sensitivity
+                includeScore: true, // Include score to rank results
+            };
+        
+            fuse = new Fuse(data, options);
+        } 
 
         // Function to close the info pane
         function closeInfoPane() {
