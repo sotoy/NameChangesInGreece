@@ -109,51 +109,51 @@
             #sidebar {
                 transform: translateX(-100%);
             }
+        }   
 
-            #sidebar.collapsed {
-                transform: translateX(0);
-            }
+        #sidebar.collapsed {
+            transform: translateX(0);
+        }
             
-            #search-container {
-                position: relative;
-                margin-left: auto;
-            }
-        
-            #search-bar {
-                width: 300px;
-                padding: 8px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                font-size: 16px;
-            }
-        
-            #search-results {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 300px;
-                max-height: 200px;
-                overflow-y: auto;
-                background-color: white;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-                display: none;
-                z-index: 1000;
-                list-style: none;
-                margin: 0;
-                padding: 0;
-            }
-        
-            #search-results li {
-                padding: 8px 12px;
-                cursor: pointer;
-                font-size: 14px;
-            }
-        
-            #search-results li:hover {
-                background: #f0f0f0;
-            }
+        #search-container {
+            position: relative;
+            margin-left: auto;
+        }
+    
+        #search-bar {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    
+        #search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 2000;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+    
+        #search-results li {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    
+        #search-results li:hover {
+            background: #f0f0f0;
         }
     </style>
 </head>
@@ -328,7 +328,7 @@
             // Display results in the dropdown
             searchResults.innerHTML = results
                 .map(({ item }) => `
-                    <li data-lat="${item.Latitude}" data-lng="${item.Longitude}">
+                    <li data-lat="${item.Latitude}" data-lng="${item.Longitude}" data-name="${item['Νέα Ονομασία']}">
                         <strong>${item['Νέα Ονομασία']}</strong> (${item['Παλαιά Ονομασία'] || 'Unknown'})<br>
                         <span style="font-size: 12px; color: #666;">${item['Νομός'] || ''}, ${item['Επαρχία'] || ''}</span>
                     </li>
@@ -351,14 +351,15 @@
             if (target) {
                 const lat = parseFloat(target.dataset.lat);
                 const lng = parseFloat(target.dataset.lng);
+                const name = parseFloat(target.dataset.name);
 
         
                 // Center and zoom the map
-                map.setView([lat, lng], 12);
+                map.setView([lat, lng], 15);
         
                 // Find the clicked settlement and open the info pane
                 const settlement = settlements.find(settlement =>
-                    settlement.Latitude == lat && settlement.Longitude == lng
+                    settlement.Latitude == lat && settlement.Longitude == lng && settlement['Νέα Ονομασία'] == name
                 );
         
                 if (settlement) {
