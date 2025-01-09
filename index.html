@@ -327,8 +327,8 @@
         
             // Display results in the dropdown
             searchResults.innerHTML = results.map(({ item }) => `
-                <li data-lat="${result.Latitude}" data-lng="${result.Longitude}">
-                    ${result['Νέα Ονομασία']} (${result['Παλαιά Ονομασία'] || 'Unknown'})
+                <li data-lat="${item.Latitude}" data-lng="${item.Longitude}">
+                    ${item['Νέα Ονομασία']} (${item['Παλαιά Ονομασία'] || 'Unknown'})
                 </li>
             `).join("");
         
