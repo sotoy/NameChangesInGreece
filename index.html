@@ -14,20 +14,24 @@
             height: 100vh;
         }
 
+        /* General styling for header */
         header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
             background-color: #333;
             color: white;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            position: relative;
-            z-index: 1000;
         }
 
         header h1 {
-            flex: 1;
-            margin: 0;
             font-size: 1.5em;
+            margin: 0;
+            flex: 1 1 60%; /* Shrinkable space for the title */
+            white-space: nowrap; /* Prevent wrapping */
+            overflow: hidden; /* Hide overflow */
+            text-overflow: ellipsis; /* Add ellipsis if title overflows */
         }
 
         main {
@@ -117,7 +121,7 @@
                 width: 200px;
             }
         }
-        @media (max-width: 480px) {
+        /*@media (max-width: 480px) {
             #search-bar {
                 width: 50px;
                 padding-left: 25px;
@@ -150,13 +154,55 @@
                 order: 3;
             }
             
+        }*/
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column; /* Stack items in smaller screens */
+                text-align: center;
+            }
+        
+            header h1 {
+                font-size: 1.2em;
+                flex: none; /* Full width for title */
+                margin-bottom: 10px;
+            }
+        
+            #search-container {
+                flex: none; /* Full width for search bar */
+                width: 100%;
+            }
+        
+            #search-container input {
+                max-width: 90%; /* Shrink the input on small screens */
+                text-align: center; /* Center-align text */
+            }
+        
+            /* Replace placeholder with an icon on very small screens */
+            @media (max-width: 400px) {
+                #search-container input::placeholder {
+                    content: "\1F50D"; /* Magnifying glass Unicode */
+                }
+        
+                #search-container input {
+                    padding-left: 30px; /* Leave space for the icon */
+                    background: url('magnifying-glass-icon.png') no-repeat left center;
+                    background-size: 20px;
+                }
+            }
         }
             
         #search-container {
-            position: relative;
-            margin-left: auto;
+            flex: 1 1 35%; /* Shrinkable space for the search bar */
             display: flex;
-            align-items: center;
+            justify-content: flex-end;
+        }
+        #search-container input {
+            width: 100%;
+            max-width: 300px; /* Limit search bar width */
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
     
         #search-bar {
