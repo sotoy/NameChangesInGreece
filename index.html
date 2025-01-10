@@ -13,7 +13,7 @@
             flex-direction: column;
             height: 100vh;
         }
-
+        
         /* General styling for header */
         header {
             display: flex;
@@ -23,37 +23,71 @@
             padding: 10px;
             background-color: #333;
             color: white;
+            box-sizing: border-box; /* Include padding in width calculations */
+            overflow: hidden; /* Prevent elements from going outside */
         }
-
+        
         header h1 {
             font-size: 1.5em;
             margin: 0;
-            flex: 1 1 60%; /* Shrinkable space for the title */
+            flex: 1 1 auto; /* Allow shrinking of title if necessary */
             white-space: nowrap; /* Prevent wrapping */
             overflow: hidden; /* Hide overflow */
-            text-overflow: ellipsis; /* Add ellipsis if title overflows */
+            text-overflow: ellipsis; /* Add ellipsis for long titles */
         }
-
+        
+        #toggle-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+        
+        #toggle-btn:focus {
+            outline: none;
+        }
+        
+        /* Search bar container */
+        #search-container {
+            flex: 1 1 auto; /* Allow shrinking and growing */
+            display: flex;
+            justify-content: flex-end;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        #search-container input {
+            width: 100%;
+            max-width: 300px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        
+        /* Main layout */
         main {
             display: flex;
             flex: 1;
             position: relative;
         }
-
+        
         #sidebar {
             width: 300px;
             background-color: #f4f4f4;
             padding: 20px;
             border-right: 1px solid #ccc;
             overflow-y: auto;
-            transition: transform 0.3s ease;
-            transform: translateX(0);
             position: absolute;
             top: 0;
             bottom: 0;
             z-index: 900;
+            transition: transform 0.3s ease;
+            transform: translateX(0);
         }
-
+        
         #sidebar.collapsed {
             transform: translateX(-100%);
         }
@@ -64,7 +98,7 @@
             position: relative;
             z-index: 800;
         }
-
+        
         #info-pane {
             position: absolute;
             right: 10px;
@@ -79,7 +113,7 @@
             max-height: 80vh;
             overflow-y: auto;
         }
-
+        
         #info-pane button {
             position: absolute;
             top: 5px;
@@ -91,161 +125,45 @@
             cursor: pointer;
             border-radius: 5px;
         }
-
+        
         #info-pane button:hover {
             background-color: #d32f2f;
         }
-
-        #toggle-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            margin-right: 20px;
-        }
-
-        #toggle-btn:focus {
-            outline: none;
-        }
-        /* Media Query: Close the sidebar by default on mobile screens */
+        
+        /* Media queries for responsive design */
         @media (max-width: 768px) {
-            #sidebar {
-                transform: translateX(-100%);
-            }   
-
-            #sidebar.collapsed {
-                transform: translateX(0);
-            }
-            #search-bar {
-                width: 200px;
-            }
-        }
-        /*@media (max-width: 480px) {
-            #search-bar {
-                width: 50px;
-                padding-left: 25px;
-                background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="gray" viewBox="0 0 24 24"><path d="M10 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8zm11.293-4.293-4.853-4.854a6.978 6.978 0 0 0-1.414-1.414l4.854-4.854-1.414-1.414-4.854 4.854a6.978 6.978 0 0 0-1.414-1.414l-4.854-4.854L8.293 3.293l4.854 4.854a6.978 6.978 0 0 0-1.414 1.414l-4.854-4.854L3.293 4.293l4.854 4.854a6.978 6.978 0 0 0-1.414 1.414l-4.854-4.854L1.293 7.293l4.854 4.854a6.978 6.978 0 0 0-1.414 1.414l-4.854-4.854L.293 10.293l4.854 4.854c-1.757 2.208-1.757 5.456 0 7.664 2.208 1.757 5.456 1.757 7.664 0 1.757-2.208 1.757-5.456 0-7.664zm.707 1.415c-1.464 1.464-3.879 1.464-5.344 0-1.464-1.464-1.464-3.879 0-5.344 1.464-1.464 3.879-1.464 5.344 0 1.464 1.464 1.464 3.879 0 5.344z"></path></svg>') no-repeat left center;
-                background-size: 16px;
-                font-size: 0;
-                color: transparent;
-                transition: all 0.3s ease;
-            }
-        
-            #search-bar:focus {
-                width: 200px;
-                font-size: 16px;
-                color: black;
-                padding-left: 8px;
-                background: none;
-            }
-            header h1 {
-                order: 1;
-                text-align: center;
-                font-size: 1.2em;
-                margin-bottom: 5px;
-            }
-        
-            #search-container {
-                order: 2;
-            }
-        
-            #toggle-btn {
-                order: 3;
-            }
-            
-        }*/
-
-        @media (max-width: 600px) {
             header {
-                flex-direction: column; /* Stack items in smaller screens */
+                flex-direction: column;
                 text-align: center;
             }
         
             header h1 {
                 font-size: 1.2em;
-                flex: none; /* Full width for title */
                 margin-bottom: 10px;
+                flex: none;
             }
         
             #search-container {
-                flex: none; /* Full width for search bar */
+                flex: none;
                 width: 100%;
             }
         
             #search-container input {
-                max-width: 90%; /* Shrink the input on small screens */
-                text-align: center; /* Center-align text */
-            }
-        
-            /* Replace placeholder with an icon on very small screens */
-            @media (max-width: 400px) {
-                #search-container input::placeholder {
-                    content: "\1F50D"; /* Magnifying glass Unicode */
-                }
-        
-                #search-container input {
-                    padding-left: 30px; /* Leave space for the icon */
-                    background: url('magnifying-glass-icon.png') no-repeat left center;
-                    background-size: 20px;
-                }
+                max-width: 90%;
+                text-align: center;
             }
         }
-            
-        #search-container {
-            flex: 1 1 35%; /* Shrinkable space for the search bar */
-            display: flex;
-            justify-content: flex-end;
-        }
-        #search-container input {
-            width: 100%;
-            max-width: 300px; /* Limit search bar width */
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-    
-        #search-bar {
-            width: 300px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            transition: width 0.3s ease;
-        }
-
-        #search-bar::placeholder {
-            color: #aaa;
-            font-size: 14px;
-        }
-    
-        #search-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 300px;
-            max-height: 200px;
-            overflow-y: auto;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            display: none;
-            z-index: 2000;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-    
-        #search-results li {
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 14px;
-            color: black;
-        }
-    
-        #search-results li:hover {
-            background: #f0f0f0;
+        
+        @media (max-width: 400px) {
+            #search-container input::placeholder {
+                content: "\1F50D"; /* Use a magnifying glass Unicode as placeholder */
+            }
+        
+            #search-container input {
+                padding-left: 30px;
+                background: url('magnifying-glass-icon.png') no-repeat left center;
+                background-size: 20px;
+            }
         }
     </style>
 </head>
