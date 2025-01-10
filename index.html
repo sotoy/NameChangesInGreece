@@ -113,11 +113,50 @@
             #sidebar.collapsed {
                 transform: translateX(0);
             }
+            #search-bar {
+                width: 200px;
+            }
+        }
+        @media (max-width: 480px) {
+            #search-bar {
+                width: 50px;
+                padding-left: 25px;
+                background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="gray" viewBox="0 0 24 24"><path d="M10 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8zm11.293-4.293-4.853-4.854a6.978 6.978 0 0 0-1.414-1.414l4.854-4.854-1.414-1.414-4.854 4.854a6.978 6.978 0 0 0-1.414-1.414l-4.854-4.854L8.293 3.293l4.854 4.854a6.978 6.978 0 0 0-1.414 1.414l-4.854-4.854L3.293 4.293l4.854 4.854a6.978 6.978 0 0 0-1.414 1.414l-4.854-4.854L1.293 7.293l4.854 4.854a6.978 6.978 0 0 0-1.414 1.414l-4.854-4.854L.293 10.293l4.854 4.854c-1.757 2.208-1.757 5.456 0 7.664 2.208 1.757 5.456 1.757 7.664 0 1.757-2.208 1.757-5.456 0-7.664zm.707 1.415c-1.464 1.464-3.879 1.464-5.344 0-1.464-1.464-1.464-3.879 0-5.344 1.464-1.464 3.879-1.464 5.344 0 1.464 1.464 1.464 3.879 0 5.344z"></path></svg>') no-repeat left center;
+                background-size: 16px;
+                font-size: 0;
+                color: transparent;
+                transition: all 0.3s ease;
+            }
+        
+            #search-bar:focus {
+                width: 200px;
+                font-size: 16px;
+                color: black;
+                padding-left: 8px;
+                background: none;
+            }
+            header h1 {
+                order: 1;
+                text-align: center;
+                font-size: 1.2em;
+                margin-bottom: 5px;
+            }
+        
+            #search-container {
+                order: 2;
+            }
+        
+            #toggle-btn {
+                order: 3;
+            }
+            
         }
             
         #search-container {
             position: relative;
             margin-left: auto;
+            display: flex;
+            align-items: center;
         }
     
         #search-bar {
@@ -126,6 +165,12 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 16px;
+            transition: width 0.3s ease;
+        }
+
+        #search-bar::placeholder {
+            color: #aaa;
+            font-size: 14px;
         }
     
         #search-results {
