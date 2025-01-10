@@ -30,8 +30,7 @@
         header h1 {
             font-size: 1.5em;
             margin: 0;
-            flex: 1 1 100%; /* Allow shrinking of title if necessary */
-            text-align: center;
+            flex: 1 1 auto; /* Allow shrinking of title if necessary */
             white-space: nowrap; /* Prevent wrapping */
             overflow: hidden; /* Hide overflow */
             text-overflow: ellipsis; /* Add ellipsis for long titles */
@@ -43,8 +42,8 @@
             color: white;
             font-size: 24px;
             cursor: pointer;
-            margin-right: 10px;
-            flex-shrink: 0;        }
+            margin-right: 20px;
+        }
         
         #toggle-btn:focus {
             outline: none;
@@ -135,26 +134,17 @@
         @media (max-width: 768px) {
             header {
                 flex-direction: column;
-                align-items: flex-start; /* Align items to the start */
                 text-align: center;
             }
         
             header h1 {
-                order: 1;
-                margin-bottom: 10px; /* Add spacing below title */
-                text-align: center;
-                /*flex: none;*/
-            }
-
-            /* Toggle button and search container move to the next line */
-            #toggle-btn {
-                order: 2;
+                font-size: 1.2em;
                 margin-bottom: 10px;
+                flex: none;
             }
         
             #search-container {
-                /*flex: none;*/
-                order: 3;
+                flex: none;
                 width: 100%;
             }
         
