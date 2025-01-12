@@ -402,6 +402,9 @@
                 const settlement = settlements.find(settlement =>
                     settlement.Latitude == lat && settlement.Longitude == lng && settlement['Νέα Ονομασία'] == name
                 );
+
+                console.log(lat, lng, name);
+                console.log(settlement);
         
                 if (settlement) {
                     infoContent.innerHTML = `
