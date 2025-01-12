@@ -396,18 +396,12 @@
         
                 console.log(lat, lng, name); // Log lat, lng, and name for debugging
         
-                // Round lat/lng to a consistent precision for comparison
-                const roundedLat = lat.toFixed(6); 
-                const roundedLng = lng.toFixed(6);
-        
-                console.log(roundedLat, roundedLng);  // Verify the rounded lat/lng
-
                 console.log(settlements.slice(0, 5)); // Only logs the first 5 entries
                 console.log(settlements.find(s => s['Νέα Ονομασία'] === "Κάτω Παλιοκκλήσιon"));
                 // Find the clicked settlement and open the info pane
                 const settlement = settlements.find(settlement =>
-                    settlement.Latitude.toFixed(6) === roundedLat && 
-                    settlement.Longitude.toFixed(6) === roundedLng && 
+                    settlement.Latitude === lat && 
+                    settlement.Longitude === lng && 
                     settlement['Νέα Ονομασία'].trim().toLowerCase() === name
                 );
         
