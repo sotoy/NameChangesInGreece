@@ -392,19 +392,24 @@
             if (target) {
                 const lat = parseFloat(target.dataset.lat);
                 const lng = parseFloat(target.dataset.lng);
-                const name = target.dataset.name;
-
+                const name = target.dataset.name.trim().toLowerCase(); // Normalize the name
         
-                // Center and zoom the map
-                map.setView([lat, lng], 15);
+                console.log(lat, lng, name); // Log lat, lng, and name for debugging
+        
+                // Round lat/lng to a consistent precision for comparison
+                const roundedLat = lat.toFixed(6); 
+                const roundedLng = lng.toFixed(6);
+        
+                console.log(roundedLat, roundedLng);  // Verify the rounded lat/lng
         
                 // Find the clicked settlement and open the info pane
                 const settlement = settlements.find(settlement =>
-                    settlement.Latitude == lat && settlement.Longitude == lng && settlement['Νέα Ονομασία'] == name
+                    settlement.Latitude.toFixed(6) === roundedLat && 
+                    settlement.Longitude.toFixed(6) === roundedLng && 
+                    settlement['Νέα Ονομασία'].trim().toLowerCase() === name
                 );
-
-                console.log(lat, lng, name);
-                console.log(settlement);
+        
+                console.log(settlement);  // Log the found settlement for debugging
         
                 if (settlement) {
                     infoContent.innerHTML = `
