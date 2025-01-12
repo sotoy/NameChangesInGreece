@@ -408,6 +408,7 @@
                 console.log(settlement);  // Log the found settlement for debugging
         
                 if (settlement) {
+                    map.setView([lat, lng], 15);
                     infoContent.innerHTML = `
                         <h3>${settlement['Νέα Ονομασία']}</h3>
                         <p><strong>Παλαιά Ονομασία:</strong> ${settlement['Παλαιά Ονομασία']}</p>
