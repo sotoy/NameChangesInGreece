@@ -463,6 +463,12 @@
                     alert('Please provide valid inputs!');
                     return;
                 }
+
+                const settlement = settlements.find(settlement =>
+                    settlement.Latitude === lat && 
+                    settlement.Longitude === lng && 
+                    settlement['Νέα Ονομασία'].trim().toLowerCase() === name
+                );
         
                 settlement['Νέα Ονομασία'] = newName;
                 settlement['Παλαιά Ονομασία'] = oldName;
