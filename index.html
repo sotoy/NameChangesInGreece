@@ -114,7 +114,6 @@
             z-index: 1000;
             max-height: 80vh;
             overflow-y: auto;
-            display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
@@ -356,7 +355,8 @@
 
                             // Display the new info
                             infoContent.innerHTML = populateInfoContent(settlement);
-                            infoPane.style.display = 'block';
+                            infoPane.style.display = 'flex';
+                            // infoPane.style.display = 'block';
 
                             // Set current marker to the one that was clicked
                             currentMarker = marker;
@@ -418,7 +418,8 @@
                 if (settlement) {
                     map.setView([lat, lng], 15);
                     infoContent.innerHTML = populateInfoContent(settlement);
-                    infoPane.style.display = "block";
+                    infoPane.style.display = 'flex';
+                    // infoPane.style.display = "block";
                 }
         
                 // Clear search and hide results
