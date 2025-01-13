@@ -114,21 +114,45 @@
             z-index: 1000;
             max-height: 80vh;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #top-buttons {
+            display: flex;
+            justify-content: space-between; /* Horizontal alignment */
+            gap: 5px; /* Space between buttons */
+            margin-bottom: 10px;
+        }
+        
+        #bottom-buttons {
+            display: flex;
+            justify-content: space-between; /* Horizontal alignment */
+            gap: 5px; /* Space between buttons */
+            margin-top: 10px;
         }
         
         #info-pane button {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #f44336;
+            padding: 5px 10px;
+            font-size: 12px;
+            background-color: #007bff;
             color: white;
             border: none;
-            padding: 5px 10px;
+            border-radius: 3px;
             cursor: pointer;
-            border-radius: 5px;
         }
         
         #info-pane button:hover {
+            background-color: #0056b3;
+        }
+        
+        #info-pane button.close-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        #info-pane button.close-btn:hover {
             background-color: #d32f2f;
         }
 
@@ -484,8 +508,12 @@
         }
 
         function populateInfoContent(s) {
-            var content = `
+            return `
                 <div id="view-mode">
+                    <div id="top-buttons">
+                        <button class="close-btn" id="close-info-btn">Close</button>
+                        <button id="edit-btn">Edit</button>
+                    </div>
                     <h3>${s['Νέα Ονομασία']}</h3>
                     <p><strong>Παλαιά Ονομασία:</strong> ${s['Παλαιά Ονομασία']}</p>
                     <p><strong>Παραλλαγή Παλαιάς Ονομασίας:</strong> ${s['Παραλλαγή Παλαιάς Ονομασίας'] || 'Κενό'}</p>
@@ -496,32 +524,23 @@
                     <p><strong>Φ.Ε.Κ.:</strong> ${s['Φ.Ε.Κ.']}</p>
                     <p><strong>Σχόλια:</strong> ${s['Σχόλια'] || 'Κανένα σχόλιο'}</p>
                     <p><strong>Coordinates:</strong> ${s.Latitude}, ${s.Longitude}</p>
-                    <button id="edit-btn" style="margin-top: 10px;">Edit</button>
                 </div>
                 <div id="edit-mode" style="display: none;">
+                    <div id="top-buttons">
+                        <button class="close-btn" id="close-info-btn">Close</button>
+                    </div>
                     <label for="edit-new-name"><strong>Νέα Ονομασία:</strong></label>
                     <input type="text" id="edit-new-name" value="${s['Νέα Ονομασία']}" style="width: 100%; margin-bottom: 10px;">
-            
                     <label for="edit-old-name"><strong>Παλαιά Ονομασία:</strong></label>
                     <input type="text" id="edit-old-name" value="${s['Παλαιά Ονομασία']}" style="width: 100%; margin-bottom: 10px;">
-            
-                    <p><strong>Παραλλαγή Παλαιάς Ονομασίας:</strong> ${s['Παραλλαγή Παλαιάς Ονομασίας'] || 'Κενό'}</p>
-                    <p><strong>Παραλλαγή Νέας Ονομασίας:</strong> ${s['Παραλλαγή Νέας Ονομασίας'] || 'Κενό'}</p>
-                    <p><strong>Γεωγραφικό Διαμέρισμα:</strong> ${s['Γεωγραφικό Διαμέρισμα']}</p>
-                    <p><strong>Νομός:</strong> ${s['Νομός']}</p>
-                    <p><strong>Επαρχία:</strong> ${s['Επαρχία']}</p>
-                    <p><strong>Φ.Ε.Κ.:</strong> ${s['Φ.Ε.Κ.']}</p>
-                    <p><strong>Σχόλια:</strong> ${s['Σχόλια'] || 'Κανένα σχόλιο'}</p>
-            
-                    <label><strong>Coordinates:</strong></label>
-                    <p id="edit-coords-display">${s.Latitude}, ${s.Longitude}</p>
+                    <p><strong>Coordinates:</strong> <span id="edit-coords-display" data-new-lat="${s.Latitude}" data-new-lng="${s.Longitude}">${s.Latitude}, ${s.Longitude}</span></p>
                     <button id="select-new-coords-btn" style="margin-bottom: 10px;">Edit Location</button>
-            
-                    <button id="save-changes-btn" style="background-color: #4CAF50; color: white; border: none; padding: 10px; cursor: pointer;">Save Changes</button>
-                    <button id="cancel-changes-btn" style="background-color: #f44336; color: white; border: none; padding: 10px; cursor: pointer; margin-left: 10px;">Cancel</button>
+                    <div id="bottom-buttons">
+                        <button id="save-changes-btn" style="background-color: #4CAF50;">Save</button>
+                        <button id="cancel-changes-btn" style="background-color: #f44336;">Cancel</button>
+                    </div>
                 </div>
             `;
-            return content;    
         }
 
         function displaySettlementInfo(settlement) {
