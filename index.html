@@ -291,7 +291,6 @@
         </div>
         <div id="map"></div>
         <div id="info-pane">
-            <button onclick="closeInfoPane()">Close</button>
             <div id="info-content"></div>
         </div>
     </main>
@@ -511,7 +510,7 @@
             return `
                 <div id="view-mode">
                     <div id="top-buttons">
-                        <button class="close-btn" id="close-info-btn">Close</button>
+                        <button class="close-btn" id="close-info-btn" onclick="closeInfoPane()">Close</button>
                         <button id="edit-btn">Edit</button>
                     </div>
                     <h3>${s['Νέα Ονομασία']}</h3>
