@@ -283,6 +283,7 @@
         var currentMarker = null;
         let settlements = []; // To store settlement data
         let fuse;
+        let currentSettlement = null; // Holds the settlement being edited
         const searchBar = document.getElementById("search-bar");
         const searchResults = document.getElementById("search-results");
 
@@ -431,8 +432,8 @@
                 // Save edits
                 const newName = document.getElementById('edit-new-name').value.trim();
                 const oldName = document.getElementById('edit-old-name').value.trim();
-                const newLat = parseFloat(document.getElementById('edit-coords-display').dataset.newLat || settlement.Latitude);
-                const newLng = parseFloat(document.getElementById('edit-coords-display').dataset.newLng || settlement.Longitude);
+                const newLat = parseFloat(document.getElementById('edit-coords-display').dataset.newLat || currentSettlement.Latitude);
+                const newLng = parseFloat(document.getElementById('edit-coords-display').dataset.newLng || currentSettlement.Longitude);
         
                 if (!newName || isNaN(newLat) || isNaN(newLng)) {
                     alert('Please provide valid inputs!');
@@ -448,7 +449,7 @@
         
                 // Return to view mode
                 infoPane.innerHTML = ''; // Re-render the pane with updated data
-                infoContent.innerHTML = populateInfoContent(settlement);
+                displaySettlementInfo(currentSettlement);
             }
         
             if (e.target.id === 'cancel-changes-btn') {
@@ -522,6 +523,12 @@
             `;
             return content;    
         }
+
+        function displaySettlementInfo(settlement) {
+            currentSettlement = settlement; // Store the settlement globally
+            infoContent.innerHTML = populateInfoContent(settlement);
+        }
+        
     </script>
 </body>
 </html>
