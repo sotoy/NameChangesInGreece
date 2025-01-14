@@ -354,6 +354,7 @@
                             }
 
                             // Display the new info
+                            currentSettlement = settlement;
                             infoContent.innerHTML = populateInfoContent(settlement);
                             infoPane.style.display = 'flex';
                             // infoPane.style.display = 'block';
@@ -417,6 +418,7 @@
         
                 if (settlement) {
                     map.setView([lat, lng], 15);
+                    currentSettlement = settlement;
                     infoContent.innerHTML = populateInfoContent(settlement);
                     infoPane.style.display = 'flex';
                     // infoPane.style.display = "block";
@@ -463,17 +465,11 @@
                     alert('Please provide valid inputs!');
                     return;
                 }
-
-                const settlement = settlements.find(settlement =>
-                    settlement.Latitude === lat && 
-                    settlement.Longitude === lng && 
-                    settlement['Νέα Ονομασία'].trim().toLowerCase() === name
-                );
         
-                settlement['Νέα Ονομασία'] = newName;
-                settlement['Παλαιά Ονομασία'] = oldName;
-                settlement.Latitude = newLat;
-                settlement.Longitude = newLng;
+                currentSettlement['Νέα Ονομασία'] = newName;
+                currentSettlement['Παλαιά Ονομασία'] = oldName;
+                currentSettlement.Latitude = newLat;
+                currentSettlement.Longitude = newLng;
         
                 alert('Changes saved successfully!');
         
