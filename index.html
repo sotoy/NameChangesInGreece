@@ -475,7 +475,10 @@
         
                 // Return to view mode
                 infoPane.innerHTML = ''; // Re-render the pane with updated data
-                displaySettlementInfo(currentSettlement);
+                infoContent.innerHTML = populateInfoContent(settlement);
+
+                document.getElementById('edit-mode').style.display = 'none';
+                document.getElementById('view-mode').style.display = 'block';
             }
         
             if (e.target.id === 'cancel-changes-btn') {
